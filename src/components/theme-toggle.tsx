@@ -6,10 +6,20 @@ import { Moon, Sun } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+  const { setTheme, resolvedTheme } = useTheme();
 
-  // 'system' theme can be light or dark, so we check for 'dark' explicitly
-  const isDarkMode = theme === 'dark';
+  // useEffect only runs on the client, so now we can safely show the UI
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    // A placeholder can be returned to prevent layout shift, or null
+    return null;
+  }
+
+  const isDarkMode = resolvedTheme === 'dark';
 
   const toggleTheme = (checked: boolean) => {
     setTheme(checked ? 'dark' : 'light');
