@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { ResumeData } from '@/lib/types';
+import type { ResumeData, ResumeTemplate } from '@/lib/types';
 import { PageHeader } from '@/components/page-header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ResumeForm } from '@/components/craft-my-cv/resume-form';
@@ -52,7 +52,7 @@ const initialResumeData: ResumeData = {
 
 export default function CraftMyCVPage() {
   const [resumeData, setResumeData] = useState<ResumeData>(initialResumeData);
-  const [template, setTemplate] = useState<'mit' | 'harvard'>('mit');
+  const [template, setTemplate] = useState<ResumeTemplate>('modern');
 
   const handleResumeChange = (newData: Partial<ResumeData>) => {
     setResumeData((prev) => ({ ...prev, ...newData }));
@@ -62,14 +62,14 @@ export default function CraftMyCVPage() {
     <div className="flex flex-col h-screen bg-background">
       <PageHeader />
       <main className="flex-1 grid md:grid-cols-2 gap-4 lg:gap-8 p-4 lg:p-6 overflow-hidden">
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full min-h-0">
           <Tabs defaultValue="editor" className="flex flex-col h-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="editor">Editor</TabsTrigger>
               <TabsTrigger value="optimizer">AI Optimizer</TabsTrigger>
               <TabsTrigger value="ats">ATS Checker</TabsTrigger>
             </TabsList>
-            <TabsContent value="editor" className="flex-1 overflow-hidden min-h-0">
+            <TabsContent value="editor" className="flex-1 mt-2 overflow-hidden min-h-0">
               <ScrollArea className="h-full pr-4">
                 <ResumeForm
                   resumeData={resumeData}
@@ -77,12 +77,12 @@ export default function CraftMyCVPage() {
                 />
               </ScrollArea>
             </TabsContent>
-            <TabsContent value="optimizer" className="flex-1 overflow-hidden min-h-0">
+            <TabsContent value="optimizer" className="flex-1 mt-2 overflow-hidden min-h-0">
               <ScrollArea className="h-full pr-4">
                 <AIOptimizer resumeData={resumeData} />
               </ScrollArea>
             </TabsContent>
-            <TabsContent value="ats" className="flex-1 overflow-hidden min-h-0">
+            <TabsContent value="ats" className="flex-1 mt-2 overflow-hidden min-h-0">
               <ScrollArea className="h-full pr-4">
                 <ATSChecker />
               </ScrollArea>

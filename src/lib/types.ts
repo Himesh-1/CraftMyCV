@@ -37,3 +37,5 @@ export interface ResumeData {
   education: Education[];
   skills: Skill[];
 }
+
+export type ResumeTemplate = 'mit' | 'harvard' | 'classic' | 'modern';
