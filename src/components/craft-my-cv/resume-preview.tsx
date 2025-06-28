@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -24,9 +24,11 @@ import {
   MapPin,
   Download,
   ChevronDown,
+  Loader2,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '../ui/scroll-area';
+import { generateDocx } from '@/app/actions';
 
 interface ResumePreviewProps {
   data: ResumeData;
@@ -53,11 +55,23 @@ export function ResumePreview({
 }: ResumePreviewProps) {
   const { toast } = useToast();
   const resumeRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownload = async (format: 'PDF' | 'DOCX') => {
+    setIsDownloading(true);
+    const element = resumeRef.current;
+    if (!element) {
+      toast({
+        title: 'Download Error',
+        description: 'Could not find the resume content to download.',
+        variant: 'destructive',
+      });
+      setIsDownloading(false);
+      return;
+    }
+
     if (format === 'PDF') {
-      const element = resumeRef.current;
-      if (element) {
+      try {
         const { default: html2pdf } = await import('html2pdf.js');
         const opt = {
           margin: 0,
@@ -70,19 +84,55 @@ export function ResumePreview({
           title: 'Generating PDF...',
           description: 'Your download will begin shortly.',
         });
-        html2pdf().from(element).set(opt).save();
-      } else {
+        await html2pdf().from(element).set(opt).save();
+      } catch (error) {
+        console.error('Error generating PDF:', error);
         toast({
-          title: 'Download Error',
-          description: 'Could not find the resume content to download.',
+          title: 'PDF Generation Failed',
+          description: (error as Error).message || 'An error occurred.',
           variant: 'destructive',
         });
+      } finally {
+        setIsDownloading(false);
       }
-    } else {
-      toast({
-        title: 'Feature Coming Soon!',
-        description: `${format} download will be available in a future update.`,
-      });
+    } else if (format === 'DOCX') {
+      try {
+        toast({
+          title: 'Generating DOCX...',
+          description:
+            'Your download will begin shortly. Note: Styling may differ.',
+        });
+
+        const base64 = await generateDocx(element.outerHTML);
+
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], {
+          type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        });
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${data.personalDetails.fullName.replace(/\s+/g, '-')}-Resume.docx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Error generating DOCX:', error);
+        toast({
+          title: 'DOCX Generation Failed',
+          description: (error as Error).message,
+          variant: 'destructive',
+        });
+      } finally {
+        setIsDownloading(false);
+      }
     }
   };
 
@@ -1040,14 +1090,27 @@ export function ResumePreview({
         </CardContent>
       </ScrollArea>
       <CardFooter className="justify-end gap-2">
-        <Button variant="outline" onClick={() => handleDownload('PDF')}>
-          <Download className="mr-2 h-4 w-4" /> Download PDF
+        <Button
+          variant="outline"
+          onClick={() => handleDownload('PDF')}
+          disabled={isDownloading}
+        >
+          {isDownloading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="mr-2 h-4 w-4" />
+          )}
+          Download PDF
         </Button>
-        <Button onClick={() => handleDownload('DOCX')}>
-          <Download className="mr-2 h-4 w-4" /> Download DOCX
+        <Button onClick={() => handleDownload('DOCX')} disabled={isDownloading}>
+          {isDownloading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="mr-2 h-4 w-4" />
+          )}
+          Download DOCX
         </Button>
       </CardFooter>
     </Card>
   );
 }
-
