@@ -78,7 +78,9 @@ export default function CraftMyCVPage() {
               </ScrollArea>
             </TabsContent>
             <TabsContent value="optimizer" className="flex-1 overflow-hidden">
+              <ScrollArea className="h-full pr-4">
                 <AIOptimizer resumeData={resumeData} />
+              </ScrollArea>
             </TabsContent>
             <TabsContent value="ats" className="flex-1 overflow-hidden">
               <ScrollArea className="h-full pr-4">
