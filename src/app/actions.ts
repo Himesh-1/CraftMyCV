@@ -15,6 +15,11 @@ import {
   type GenerateCoverLetterInput,
   type GenerateCoverLetterOutput,
 } from '@/ai/flows/cover-letter-flow';
+import {
+  skillGapAnalysis as skillGapAnalysisFlow,
+  type SkillGapAnalysisInput,
+  type SkillGapAnalysisOutput,
+} from '@/ai/flows/skill-gap-flow';
 import htmlToDocx from 'html-to-docx';
 
 export async function optimizeResumeContent(
@@ -67,5 +72,17 @@ export async function generateDocx(htmlString: string): Promise<string> {
   } catch (error) {
     console.error('Error generating DOCX:', error);
     throw new Error('Failed to generate DOCX file.');
+  }
+}
+
+export async function skillGapAnalysis(
+  input: SkillGapAnalysisInput
+): Promise<SkillGapAnalysisOutput> {
+  try {
+    const result = await skillGapAnalysisFlow(input);
+    return result;
+  } catch (error) {
+    console.error('Error in Skill Gap Analysis:', error);
+    throw new Error('Failed to analyze skills. Please try again.');
   }
 }

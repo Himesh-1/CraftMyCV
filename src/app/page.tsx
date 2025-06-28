@@ -11,6 +11,7 @@ import { AIOptimizer } from '@/components/craft-my-cv/ai-optimizer';
 import { ATSChecker } from '@/components/craft-my-cv/ats-checker';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { CoverLetterGenerator } from '@/components/craft-my-cv/cover-letter-generator';
+import { SkillGapAnalyzer } from '@/components/craft-my-cv/skill-gap-analyzer';
 
 const initialResumeData: ResumeData = {
   personalDetails: {
@@ -67,11 +68,12 @@ export default function CraftMyCVPage() {
       <main className="flex-1 grid md:grid-cols-2 gap-4 lg:gap-8 p-4 lg:p-6 overflow-hidden">
         <div className="flex flex-col h-full min-h-0">
           <Tabs defaultValue="editor" className="flex flex-col h-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="editor">Editor</TabsTrigger>
               <TabsTrigger value="optimizer">AI Optimizer</TabsTrigger>
               <TabsTrigger value="ats">ATS Checker</TabsTrigger>
               <TabsTrigger value="cover-letter">Cover Letter</TabsTrigger>
+              <TabsTrigger value="skill-gap">Skill Gap</TabsTrigger>
             </TabsList>
             <TabsContent value="editor" className="flex-1 overflow-hidden p-1 min-h-0">
               <ScrollArea className="h-full pr-4">
@@ -94,6 +96,11 @@ export default function CraftMyCVPage() {
             <TabsContent value="cover-letter" className="flex-1 overflow-hidden p-1 min-h-0">
               <ScrollArea className="h-full pr-4">
                 <CoverLetterGenerator resumeData={resumeData} />
+              </ScrollArea>
+            </TabsContent>
+             <TabsContent value="skill-gap" className="flex-1 overflow-hidden p-1 min-h-0">
+              <ScrollArea className="h-full pr-4">
+                <SkillGapAnalyzer resumeData={resumeData} />
               </ScrollArea>
             </TabsContent>
           </Tabs>
