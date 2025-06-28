@@ -5,7 +5,7 @@ import {
   type OptimizeResumeContentInput,
   type OptimizeResumeContentOutput,
 } from '@/ai/flows/optimize-resume';
-import { asBlob } from 'html-to-docx';
+import htmlToDocx from 'html-to-docx';
 
 export async function optimizeResumeContent(
   input: OptimizeResumeContentInput
@@ -21,7 +21,7 @@ export async function optimizeResumeContent(
 
 export async function generateDocx(htmlString: string): Promise<string> {
   try {
-    const fileBuffer = (await asBlob(htmlString, {
+    const fileBuffer = (await htmlToDocx(htmlString, undefined, {
       orientation: 'portrait',
       margins: {
         top: 720,
