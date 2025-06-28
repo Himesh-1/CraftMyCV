@@ -424,7 +424,7 @@ export function ResumePreview({
     const firstName = nameParts.join(' ');
 
     return (
-        <div className="bg-white text-black p-8 font-sans w-full aspect-[8.5/11] shadow-lg text-gray-800">
+        <div className="bg-white text-gray-800 p-8 font-sans w-full aspect-[8.5/11] shadow-lg text-gray-800">
           {/* Header */}
           <div className="grid grid-cols-5 gap-8 mb-8 border-b-2 border-gray-200 pb-6">
             <div className="col-span-3">
@@ -719,6 +719,79 @@ export function ResumePreview({
     </div>
   );
 
+  const renderCopyeditorTemplate = () => (
+    <div className="bg-white text-gray-800 p-8 font-serif w-full aspect-[8.5/11] shadow-lg">
+      {/* Header */}
+      <header className="text-center mb-8">
+        <h1 className="text-4xl font-bold tracking-tight">{data.personalDetails.fullName.toUpperCase()}</h1>
+        <h2 className="text-2xl text-gray-600 mt-2">{data.personalDetails.title}</h2>
+        <div className="flex justify-center flex-wrap gap-x-4 gap-y-1 mt-4 text-sm">
+          <span>{data.personalDetails.phoneNumber}</span>
+          <span className="text-gray-400">•</span>
+          <span>{data.personalDetails.email.toUpperCase()}</span>
+          <span className="text-gray-400">•</span>
+          <span>{data.personalDetails.address}</span>
+        </div>
+      </header>
+
+      {/* Objective */}
+      <section className="mb-8">
+        <h2 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Objective</h2>
+        <p className="text-sm">{data.summary}</p>
+      </section>
+
+      {/* Skills */}
+      <section className="mb-8">
+        <h2 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Skills & Abilities</h2>
+        <ul className="list-disc pl-5 space-y-1 text-sm">
+          {data.skills.map(skill => (
+            <li key={skill.id}>{skill.name}</li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Experience */}
+      <section className="mb-8">
+        <h2 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Experience</h2>
+        {data.experience.map(exp => (
+            <div key={exp.id} className="mb-6">
+                <div className="flex justify-between items-start">
+                    <h3 className="text-lg font-semibold">{exp.jobTitle}</h3>
+                    <span className="text-gray-600 text-sm">{formatDate(exp.startDate)} – {exp.endDate === 'Present' ? 'Present' : formatDate(exp.endDate)}</span>
+                </div>
+                <h4 className="font-medium">{exp.company}, {exp.location}</h4>
+                <ul className="list-disc pl-5 mt-2 space-y-1 text-sm">
+                {exp.description.split('\n').filter(line => line.trim()).map((line, i) => (
+                    <li key={i}>{line.replace(/^-/, '').trim()}</li>
+                ))}
+                </ul>
+            </div>
+        ))}
+      </section>
+
+      {/* Education */}
+      <section className="mb-8">
+        <h2 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Education</h2>
+        {data.education.map((edu, index) => (
+            <div key={edu.id} className={cn(index > 0 && "mt-4")}>
+                <h3 className="text-lg font-semibold">{edu.degree}</h3>
+                <p className="font-medium">{edu.institution}</p>
+                <p className="text-gray-600 text-sm">{formatDate(edu.graduationDate)}</p>
+                <p className="mt-1 text-sm">{edu.details}</p>
+            </div>
+        ))}
+      </section>
+
+      {/* Leadership */}
+      {data.leadership && (
+          <section>
+            <h2 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Leadership</h2>
+            <p className="text-sm">{data.leadership}</p>
+          </section>
+      )}
+    </div>
+  );
+
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="flex-row items-center justify-between">
@@ -781,6 +854,13 @@ export function ResumePreview({
             >
               Project Manager
             </Button>
+            <Button
+              variant={template === 'copyeditor' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onTemplateChange('copyeditor')}
+            >
+              Copyeditor
+            </Button>
           </div>
         </div>
       </CardHeader>
@@ -796,6 +876,8 @@ export function ResumePreview({
                 return renderUiUxTemplate();
               case 'ats-classic':
                 return renderAtsClassicTemplate();
+              case 'copyeditor':
+                return renderCopyeditorTemplate();
               case 'modern':
                 return renderModernTemplate();
               default:

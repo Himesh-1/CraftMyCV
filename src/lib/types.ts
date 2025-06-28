@@ -52,4 +52,5 @@ export type ResumeTemplate =
   | 'ats-classic'
   | 'ui-ux'
   | 'medical'
-  | 'project-manager';
+  | 'project-manager'
+  | 'copyeditor';
