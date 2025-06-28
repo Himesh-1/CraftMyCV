@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -46,10 +47,10 @@ const initialResumeData: ResumeData = {
     },
   ],
   skills: [
-    { id: 'skill1', name: 'TypeScript' },
-    { id: 'skill2', name: 'React' },
-    { id: 'skill3', name: 'Node.js' },
-    { id: 'skill4', name: 'System Design' },
+    { id: 'skill1', name: 'TypeScript', level: 5 },
+    { id: 'skill2', name: 'React', level: 5 },
+    { id: 'skill3', name: 'Node.js', level: 4 },
+    { id: 'skill4', name: 'System Design', level: 4 },
   ],
   activities: 'Literature • Environmental conservation • Art • Yoga • Skiing • Travel',
 };
@@ -69,7 +70,7 @@ export default function CraftMyCVPage() {
               <TabsTrigger value="optimizer">AI Optimizer</TabsTrigger>
               <TabsTrigger value="ats">ATS Checker</TabsTrigger>
             </TabsList>
-            <TabsContent value="editor" className="flex-1 mt-2 overflow-hidden min-h-0">
+            <TabsContent value="editor" className="flex-1 overflow-hidden min-h-0">
               <ScrollArea className="h-full pr-4">
                 <ResumeForm
                   resumeData={resumeData}

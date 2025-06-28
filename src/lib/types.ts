@@ -1,3 +1,4 @@
+
 export interface PersonalDetails {
   fullName: string;
   title: string;
@@ -29,6 +30,7 @@ export interface Education {
 export interface Skill {
   id: string;
   name: string;
+  level: number;
 }
 
 export interface ResumeData {
@@ -47,4 +49,5 @@ export type ResumeTemplate =
   | 'classic'
   | 'modern'
   | 'ats-classic'
-  | 'ui-ux';
+  | 'ui-ux'
+  | 'medical';

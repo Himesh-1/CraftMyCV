@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -278,7 +279,7 @@ export function ResumePreview({
                         : formatDate(exp.endDate)}
                     </p>
                   </div>
-                  <ul className={styles.descriptionList}>
+                  <ul className={cn(styles.descriptionList, 'text-xs')}>
                     {exp.description
                       .split('\n')
                       .filter((line) => line.trim() !== '')
@@ -527,6 +528,102 @@ export function ResumePreview({
         </div>
     )
   };
+  
+  const renderMedicalTemplate = () => (
+    <div className="bg-white text-gray-800 p-8 font-sans w-full aspect-[8.5/11] shadow-lg">
+      {/* Header */}
+      <div className="grid grid-cols-3 gap-8 mb-8 border-b-2 border-gray-200 pb-6">
+        <div className="col-span-1">
+          <h2 className="text-xl font-bold mb-4">Contact</h2>
+          <ul className="space-y-2 text-sm">
+            <li><span className="font-semibold">Phone:</span> {data.personalDetails.phoneNumber}</li>
+            <li><span className="font-semibold">Website:</span> {data.personalDetails.website}</li>
+            <li><span className="font-semibold">Email:</span> {data.personalDetails.email}</li>
+          </ul>
+        </div>
+        <div className="col-span-2 text-right">
+          <h1 className="text-4xl font-bold">{data.personalDetails.fullName}</h1>
+          <h2 className="text-2xl text-gray-600 mt-2">{data.personalDetails.title}</h2>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="grid grid-cols-3 gap-8">
+        {/* Left Column */}
+        <div className="col-span-2">
+          {/* Profile */}
+          <section className="mb-8">
+            <h2 className="text-2xl font-bold border-b border-gray-300 pb-1 mb-3">Profile</h2>
+            <p className="text-base">{data.summary}</p>
+          </section>
+
+          {/* Work Experience */}
+          <section className="mb-8">
+            <h2 className="text-2xl font-bold border-b border-gray-300 pb-1 mb-3">Work Experience</h2>
+            {data.experience.map(exp => (
+              <div key={exp.id} className="mb-6">
+                <div className="flex justify-between items-start mb-1">
+                  <h3 className="text-xl font-semibold">{exp.jobTitle}</h3>
+                  <span className="text-gray-600 text-sm">{formatDate(exp.startDate)} - {exp.endDate === 'Present' ? 'Present' : formatDate(exp.endDate)}</span>
+                </div>
+                <h4 className="font-medium">{exp.company}</h4>
+                <ul className="list-disc pl-5 mt-2 space-y-1 text-sm">
+                  {exp.description.split('\n').filter(line => line.trim()).map((line, i) => (
+                    <li key={i}>{line.replace(/^-/, '').trim()}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </section>
+        </div>
+
+        {/* Right Column */}
+        <div className="col-span-1">
+          {/* Skills */}
+          <section className="mb-8">
+            <h2 className="text-2xl font-bold border-b border-gray-300 pb-1 mb-3">Skills</h2>
+            <ul className="space-y-3 text-sm">
+              {data.skills.map(skill => (
+                <li key={skill.id} className="flex items-center">
+                  <span className="text-yellow-500 mr-2 w-16 tracking-widest">
+                    {'★'.repeat(skill.level)}{'☆'.repeat(5 - skill.level)}
+                  </span>
+                  <span>{skill.name}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          {/* Education */}
+          <section className="mb-8">
+            <h2 className="text-2xl font-bold border-b border-gray-300 pb-1 mb-3">Education</h2>
+            {data.education.map(edu => (
+              <div key={edu.id} className="mb-4">
+                <div className="flex justify-between">
+                  <h3 className="font-semibold">{edu.institution}</h3>
+                  <span className="text-gray-600 text-sm">{formatDate(edu.graduationDate)}</span>
+                </div>
+                <p className="text-sm">{edu.degree}</p>
+                {edu.details && <p className="text-sm">{edu.details}</p>}
+              </div>
+            ))}
+          </section>
+
+          {/* Hobbies */}
+          {data.activities && (
+            <section>
+              <h2 className="text-2xl font-bold border-b border-gray-300 pb-1 mb-3">Hobbies</h2>
+              <ul className="list-disc pl-5 text-sm">
+                  {data.activities.split(/•|,/g).filter(line => line.trim()).map((line, i) => (
+                    <li key={i}>{line.trim()}</li>
+                  ))}
+                </ul>
+            </section>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 
 
   return (
@@ -577,18 +674,32 @@ export function ResumePreview({
             >
               UI/UX
             </Button>
+            <Button
+              variant={template === 'medical' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onTemplateChange('medical')}
+            >
+              Medical
+            </Button>
           </div>
         </div>
       </CardHeader>
       <ScrollArea className="flex-1">
         <CardContent className="p-2 md:p-4 lg:p-6 bg-muted/50 flex justify-center">
-          {template === 'ui-ux'
-            ? renderUiUxTemplate()
-            : template === 'ats-classic'
-            ? renderAtsClassicTemplate()
-            : template === 'modern'
-            ? renderModernTemplate()
-            : renderStandardTemplate()}
+          {(() => {
+            switch (template) {
+              case 'medical':
+                return renderMedicalTemplate();
+              case 'ui-ux':
+                return renderUiUxTemplate();
+              case 'ats-classic':
+                return renderAtsClassicTemplate();
+              case 'modern':
+                return renderModernTemplate();
+              default:
+                return renderStandardTemplate();
+            }
+          })()}
         </CardContent>
       </ScrollArea>
       <CardFooter className="justify-end gap-2">

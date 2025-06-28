@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { ResumeData } from '@/lib/types';
@@ -21,7 +22,9 @@ import {
   Trash2,
   Sparkles,
   UserCircle,
+  Star,
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ResumeFormProps {
   resumeData: ResumeData;
@@ -55,7 +58,11 @@ export function ResumeForm({ resumeData, setResumeData }: ResumeFormProps) {
   ) => {
     setResumeData((prev) => {
       const newSection = [...prev[section]];
-      (newSection[index] as any)[field] = value;
+      let finalValue: string | number = value;
+      if (section === 'skills' && field === 'level') {
+        finalValue = parseInt(value, 10);
+      }
+      (newSection[index] as any)[field] = finalValue;
       return { ...prev, [section]: newSection };
     });
   };
@@ -69,7 +76,7 @@ export function ResumeForm({ resumeData, setResumeData }: ResumeFormProps) {
       } else if (section === 'education') {
         newItem = { id: newId, degree: '', institution: '', location: '', graduationDate: '', details: '' };
       } else {
-        newItem = { id: newId, name: '' };
+        newItem = { id: newId, name: '', level: 3 };
       }
       return { ...prev, [section]: [...prev[section], newItem] };
     });
@@ -295,20 +302,38 @@ export function ResumeForm({ resumeData, setResumeData }: ResumeFormProps) {
             </div>
           </AccordionTrigger>
           <AccordionContent className="space-y-4 p-1">
-            <div className="flex flex-wrap gap-2">
-              {resumeData.skills.map((skill, index) => (
-                <div key={skill.id} className="flex items-center gap-1 bg-secondary rounded-md p-1 pl-3">
-                  <Input 
-                    className="bg-transparent border-none h-7 p-0 focus-visible:ring-0" 
-                    value={skill.name} 
-                    onChange={e => handleFieldChange('skills', index, 'name', e.target.value)}
-                  />
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => removeField('skills', skill.id)}>
+            {resumeData.skills.map((skill, index) => (
+              <div key={skill.id} className="p-4 border rounded-lg space-y-4 relative">
+                 <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => removeField('skills', skill.id)}>
                     <Trash2 className="h-4 w-4" />
-                  </Button>
+                </Button>
+                <div className="space-y-2">
+                  <Label htmlFor={`skill-name-${skill.id}`}>Skill Name</Label>
+                  <Input
+                    id={`skill-name-${skill.id}`}
+                    value={skill.name}
+                    onChange={(e) => handleFieldChange('skills', index, 'name', e.target.value)}
+                  />
                 </div>
-              ))}
-            </div>
+                <div className="space-y-2">
+                  <Label>Proficiency</Label>
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((rating) => (
+                      <Star
+                        key={rating}
+                        className={cn(
+                          "h-5 w-5 cursor-pointer transition-colors",
+                          skill.level >= rating
+                            ? "text-yellow-400 fill-yellow-400"
+                            : "text-gray-400 hover:text-yellow-300"
+                        )}
+                        onClick={() => handleFieldChange('skills', index, 'level', String(rating))}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
             <Button variant="outline" onClick={() => addField('skills')}>
               <Plus className="mr-2 h-4 w-4" /> Add Skill
             </Button>
