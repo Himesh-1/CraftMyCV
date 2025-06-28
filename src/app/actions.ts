@@ -10,6 +10,11 @@ import {
   type AtsCheckerInput,
   type AtsCheckerOutput,
 } from '@/ai/flows/ats-checker-flow';
+import {
+  generateCoverLetter as generateCoverLetterFlow,
+  type GenerateCoverLetterInput,
+  type GenerateCoverLetterOutput,
+} from '@/ai/flows/cover-letter-flow';
 import htmlToDocx from 'html-to-docx';
 
 export async function optimizeResumeContent(
@@ -31,6 +36,18 @@ export async function checkAtsFriendliness(input: AtsCheckerInput): Promise<AtsC
   } catch (error) {
     console.error('Error checking ATS friendliness:', error);
     throw new Error('Failed to check ATS score. Please try again.');
+  }
+}
+
+export async function generateCoverLetter(
+  input: GenerateCoverLetterInput
+): Promise<GenerateCoverLetterOutput> {
+  try {
+    const result = await generateCoverLetterFlow(input);
+    return result;
+  } catch (error) {
+    console.error('Error generating cover letter:', error);
+    throw new Error('Failed to generate cover letter. Please try again.');
   }
 }
 
