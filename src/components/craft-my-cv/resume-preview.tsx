@@ -137,24 +137,26 @@ export function ResumePreview({
   };
 
   const formatDate = (dateString: string) => {
-    if (!dateString) return '';
+    if (!dateString || !/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      return dateString; // Handles "Present" or other non-date strings
+    }
     try {
-      return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-      });
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const [year, month] = dateString.split('-');
+      return `${months[parseInt(month) - 1]} ${year}`;
     } catch {
       return dateString;
     }
   };
 
   const formatAtsDate = (dateString: string) => {
-    if (!dateString) return '';
+    if (!dateString || !/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      return dateString.toUpperCase(); // Handles "Present" -> "PRESENT"
+    }
     try {
-      const date = new Date(dateString);
-      return `${date
-        .toLocaleString('en-US', { month: 'long' })
-        .toUpperCase()} ${date.getFullYear()}`;
+      const months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+      const [year, month] = dateString.split('-');
+      return `${months[parseInt(month) - 1]} ${year}`;
     } catch {
       return dateString.toUpperCase();
     }
