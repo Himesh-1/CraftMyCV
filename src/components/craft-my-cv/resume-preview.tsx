@@ -416,6 +416,118 @@ export function ResumePreview({
       )}
     </div>
   );
+  
+  const renderUiUxTemplate = () => {
+    const nameParts = data.personalDetails.fullName.split(' ');
+    const lastName = nameParts.pop() || '';
+    const firstName = nameParts.join(' ');
+
+    return (
+        <div className="bg-white text-black p-8 font-sans w-full aspect-[8.5/11] shadow-lg text-gray-800">
+          {/* Header */}
+          <div className="grid grid-cols-5 gap-8 mb-8 border-b-2 border-gray-200 pb-6">
+            <div className="col-span-3">
+              <h1 className="text-4xl font-bold">
+                {firstName} <span className="text-blue-600">{lastName}</span>
+              </h1>
+              <h2 className="text-2xl text-gray-600">{data.personalDetails.title}</h2>
+            </div>
+            <div className="col-span-2">
+              <h3 className="text-lg font-semibold mb-2">Contact</h3>
+              <ul className="space-y-1 text-sm">
+                <li className="flex items-center">
+                  <span className="w-24 font-medium">Email:</span>
+                  <span>{data.personalDetails.email}</span>
+                </li>
+                <li className="flex items-center">
+                  <span className="w-24 font-medium">Phone:</span>
+                  <span>{data.personalDetails.phoneNumber}</span>
+                </li>
+                <li className="flex items-center">
+                  <span className="w-24 font-medium">Portfolio:</span>
+                  <span>{data.personalDetails.website}</span>
+                </li>
+                <li className="flex items-center">
+                  <span className="w-24 font-medium">Location:</span>
+                  <span>{data.personalDetails.address}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+    
+          {/* Main Content */}
+          <div className="grid grid-cols-5 gap-8">
+            {/* Left Column */}
+            <div className="col-span-3">
+              {/* Objective */}
+              <section className="mb-8">
+                <h3 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Objective</h3>
+                <p className="text-sm">{data.summary}</p>
+              </section>
+    
+              {/* Experience */}
+              <section className="mb-8">
+                <h3 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Experience</h3>
+                
+                {data.experience.map(exp => (
+                    <div className="mb-6" key={exp.id}>
+                        <div className="flex justify-between items-start mb-1">
+                            <h4 className="text-lg font-semibold">{exp.jobTitle}</h4>
+                            <span className="text-gray-600 text-sm">
+                                {formatDate(exp.startDate)} - {exp.endDate === 'Present' ? 'Present' : formatDate(exp.endDate)}
+                            </span>
+                        </div>
+                        <p className='italic text-sm mb-1'>{exp.company}, {exp.location}</p>
+                        <ul className="list-disc pl-5 space-y-1 text-sm">
+                           {exp.description.split('\n').filter(line => line.trim()).map((line, i) => (
+                                <li key={i}>{line.replace(/^-/, '').trim()}</li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
+              </section>
+            </div>
+    
+            {/* Right Column */}
+            <div className="col-span-2">
+              {/* About Me */}
+              {data.aboutMe && (
+                  <section className="mb-8">
+                    <h3 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">About Me</h3>
+                    <p className="text-sm">{data.aboutMe}</p>
+                  </section>
+              )}
+    
+              {/* Education */}
+              <section className="mb-8">
+                <h3 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Education</h3>
+                {data.education.map(edu => (
+                    <div key={edu.id}>
+                        <h4 className="font-semibold">{edu.institution}, {formatDate(edu.graduationDate)}</h4>
+                        <p className="text-sm">{edu.degree}</p>
+                        {edu.details && <p className='text-xs'>{edu.details}</p>}
+                    </div>
+                ))}
+              </section>
+    
+              {/* Skills */}
+              <section>
+                <h3 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Skills</h3>
+                <ul className="space-y-2 text-sm">
+                  {data.skills.map(skill => (
+                      <li key={skill.id} className="flex items-start">
+                        <span className="mr-2">•</span>
+                        <span>{skill.name}</span>
+                      </li>
+                  ))}
+                </ul>
+              </section>
+            </div>
+          </div>
+        </div>
+    )
+  };
+
 
   return (
     <Card className="h-full flex flex-col">
@@ -458,12 +570,21 @@ export function ResumePreview({
             >
               ATS Classic
             </Button>
+            <Button
+              variant={template === 'ui-ux' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onTemplateChange('ui-ux')}
+            >
+              UI/UX
+            </Button>
           </div>
         </div>
       </CardHeader>
       <ScrollArea className="flex-1">
         <CardContent className="p-2 md:p-4 lg:p-6 bg-muted/50 flex justify-center">
-          {template === 'ats-classic'
+          {template === 'ui-ux'
+            ? renderUiUxTemplate()
+            : template === 'ats-classic'
             ? renderAtsClassicTemplate()
             : template === 'modern'
             ? renderModernTemplate()

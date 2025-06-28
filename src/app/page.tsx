@@ -21,6 +21,8 @@ const initialResumeData: ResumeData = {
   },
   summary:
     'Innovative and deadline-driven Software Engineer with 5+ years of experience designing and developing user-centered applications from initial concept to final, polished deliverable.',
+  aboutMe:
+    'I am passionate about designing digital experiences that are both visually stunning and intuitive, and always strive to create designs that delight and engage users.',
   experience: [
     {
       id: 'exp1',
@@ -56,10 +58,6 @@ export default function CraftMyCVPage() {
   const [resumeData, setResumeData] = useState<ResumeData>(initialResumeData);
   const [template, setTemplate] = useState<ResumeTemplate>('modern');
 
-  const handleResumeChange = (newData: Partial<ResumeData>) => {
-    setResumeData((prev) => ({ ...prev, ...newData }));
-  };
-
   return (
     <div className="flex flex-col h-screen bg-background">
       <PageHeader />
@@ -80,7 +78,7 @@ export default function CraftMyCVPage() {
               </ScrollArea>
             </TabsContent>
             <TabsContent value="optimizer" className="flex-1 overflow-hidden min-h-0">
-               <ScrollArea className="h-full pr-4 -mr-4">
+               <ScrollArea className="h-full pr-4">
                 <AIOptimizer resumeData={resumeData} />
               </ScrollArea>
             </TabsContent>

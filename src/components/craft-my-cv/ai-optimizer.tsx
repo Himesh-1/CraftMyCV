@@ -25,11 +25,15 @@ export function AIOptimizer({ resumeData }: AIOptimizerProps) {
 
   const stringifyResume = (data: ResumeData): string => {
     let content = `Full Name: ${data.personalDetails.fullName}\n`;
+    content += `Title: ${data.personalDetails.title}\n`;
     content += `Email: ${data.personalDetails.email}\n`;
     content += `Phone: ${data.personalDetails.phoneNumber}\n`;
     content += `Address: ${data.personalDetails.address}\n`;
     content += `Website: ${data.personalDetails.website}\n\n`;
-    content += `Summary:\n${data.summary}\n\n`;
+    content += `Summary/Objective:\n${data.summary}\n\n`;
+    if (data.aboutMe) {
+        content += `About Me:\n${data.aboutMe}\n\n`;
+    }
     content += `Experience:\n`;
     data.experience.forEach(exp => {
       content += `- ${exp.jobTitle} at ${exp.company} (${exp.startDate} - ${exp.endDate})\n${exp.description}\n`;
@@ -39,6 +43,9 @@ export function AIOptimizer({ resumeData }: AIOptimizerProps) {
       content += `- ${edu.degree} from ${edu.institution} (${edu.graduationDate})\n${edu.details}\n`;
     });
     content += `\nSkills: ${data.skills.map(s => s.name).join(', ')}\n`;
+    if (data.activities) {
+        content += `\nActivities: ${data.activities}\n`;
+    }
     return content;
   };
 

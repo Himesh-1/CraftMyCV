@@ -1,6 +1,6 @@
 'use client';
 
-import type { ResumeData, WorkExperience, Education, Skill } from '@/lib/types';
+import type { ResumeData } from '@/lib/types';
 import {
   Accordion,
   AccordionContent,
@@ -20,6 +20,7 @@ import {
   Plus,
   Trash2,
   Sparkles,
+  UserCircle,
 } from 'lucide-react';
 
 interface ResumeFormProps {
@@ -40,6 +41,10 @@ export function ResumeForm({ resumeData, setResumeData }: ResumeFormProps) {
 
   const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setResumeData((prev) => ({ ...prev, summary: e.target.value }));
+  };
+
+  const handleAboutMeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setResumeData((prev) => ({ ...prev, aboutMe: e.target.value }));
   };
 
   const handleFieldChange = (
@@ -157,7 +162,7 @@ export function ResumeForm({ resumeData, setResumeData }: ResumeFormProps) {
           <AccordionTrigger>
             <div className="flex items-center gap-2">
               <FileText className="h-5 w-5" />
-              <span className="font-semibold">Professional Summary</span>
+              <span className="font-semibold">Professional Summary / Objective</span>
             </div>
           </AccordionTrigger>
           <AccordionContent className="space-y-2 p-1">
@@ -165,6 +170,26 @@ export function ResumeForm({ resumeData, setResumeData }: ResumeFormProps) {
               value={resumeData.summary}
               onChange={handleSummaryChange}
               rows={5}
+            />
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* About Me */}
+        <AccordionItem value="about-me">
+          <AccordionTrigger>
+            <div className="flex items-center gap-2">
+              <UserCircle className="h-5 w-5" />
+              <span className="font-semibold">About Me</span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-2 p-1">
+            <Label>
+              A short section about your passions and personality.
+            </Label>
+            <Textarea
+              value={resumeData.aboutMe}
+              onChange={handleAboutMeChange}
+              rows={4}
             />
           </AccordionContent>
         </AccordionItem>

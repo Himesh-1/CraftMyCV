@@ -34,10 +34,17 @@ export interface Skill {
 export interface ResumeData {
   personalDetails: PersonalDetails;
   summary: string;
+  aboutMe: string;
   experience: WorkExperience[];
   education: Education[];
   skills: Skill[];
   activities: string;
 }
 
-export type ResumeTemplate = 'mit' | 'harvard' | 'classic' | 'modern' | 'ats-classic';
+export type ResumeTemplate =
+  | 'mit'
+  | 'harvard'
+  | 'classic'
+  | 'modern'
+  | 'ats-classic'
+  | 'ui-ux';
