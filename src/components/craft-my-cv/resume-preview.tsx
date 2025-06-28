@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useRef } from 'react';
 import {
   Card,
   CardContent,
@@ -26,6 +27,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '../ui/scroll-area';
+import html2pdf from 'html2pdf.js';
 
 interface ResumePreviewProps {
   data: ResumeData;
@@ -51,12 +53,37 @@ export function ResumePreview({
   onTemplateChange,
 }: ResumePreviewProps) {
   const { toast } = useToast();
+  const resumeRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = (format: 'PDF' | 'DOCX') => {
-    toast({
-      title: 'Feature Coming Soon!',
-      description: `${format} download will be available in a future update.`,
-    });
+    if (format === 'PDF') {
+      const element = resumeRef.current;
+      if (element) {
+        const opt = {
+          margin: 0,
+          filename: `${data.personalDetails.fullName.replace(/\s+/g, '-')}-Resume.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+        };
+        toast({
+          title: 'Generating PDF...',
+          description: 'Your download will begin shortly.',
+        });
+        html2pdf().from(element).set(opt).save();
+      } else {
+        toast({
+          title: 'Download Error',
+          description: 'Could not find the resume content to download.',
+          variant: 'destructive',
+        });
+      }
+    } else {
+      toast({
+        title: 'Feature Coming Soon!',
+        description: `${format} download will be available in a future update.`,
+      });
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -990,24 +1017,26 @@ export function ResumePreview({
       </CardHeader>
       <ScrollArea className="flex-1">
         <CardContent className="p-2 md:p-4 lg:p-6 bg-muted/50 flex justify-center">
-          {(() => {
-            switch (template) {
-              case 'project-manager':
-                return renderProjectManagerTemplate();
-              case 'medical':
-                return renderMedicalTemplate();
-              case 'ui-ux':
-                return renderUiUxTemplate();
-              case 'ats-classic':
-                return renderAtsClassicTemplate();
-              case 'copyeditor':
-                return renderCopyeditorTemplate();
-              case 'modern':
-                return renderModernTemplate();
-              default:
-                return renderStandardTemplate();
-            }
-          })()}
+          <div ref={resumeRef}>
+            {(() => {
+              switch (template) {
+                case 'project-manager':
+                  return renderProjectManagerTemplate();
+                case 'medical':
+                  return renderMedicalTemplate();
+                case 'ui-ux':
+                  return renderUiUxTemplate();
+                case 'ats-classic':
+                  return renderAtsClassicTemplate();
+                case 'copyeditor':
+                  return renderCopyeditorTemplate();
+                case 'modern':
+                  return renderModernTemplate();
+                default:
+                  return renderStandardTemplate();
+              }
+            })()}
+          </div>
         </CardContent>
       </ScrollArea>
       <CardFooter className="justify-end gap-2">
