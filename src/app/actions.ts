@@ -5,6 +5,11 @@ import {
   type OptimizeResumeContentInput,
   type OptimizeResumeContentOutput,
 } from '@/ai/flows/optimize-resume';
+import {
+  checkAtsFriendliness as checkAtsFriendlinessFlow,
+  type AtsCheckerInput,
+  type AtsCheckerOutput,
+} from '@/ai/flows/ats-checker-flow';
 import htmlToDocx from 'html-to-docx';
 
 export async function optimizeResumeContent(
@@ -16,6 +21,16 @@ export async function optimizeResumeContent(
   } catch (error) {
     console.error('Error optimizing resume:', error);
     throw new Error('Failed to optimize resume. Please try again.');
+  }
+}
+
+export async function checkAtsFriendliness(input: AtsCheckerInput): Promise<AtsCheckerOutput> {
+  try {
+    const result = await checkAtsFriendlinessFlow(input);
+    return result;
+  } catch (error) {
+    console.error('Error checking ATS friendliness:', error);
+    throw new Error('Failed to check ATS score. Please try again.');
   }
 }
 

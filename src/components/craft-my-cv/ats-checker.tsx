@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -8,32 +8,26 @@ import { Textarea } from '@/components/ui/textarea';
 import { FileCheck, Loader2, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { ResumeData } from '@/lib/types';
-
+import type { AtsCheckerOutput } from '@/ai/flows/ats-checker-flow';
+import { checkAtsFriendliness } from '@/app/actions';
 
 interface CheckResult {
   text: string;
   status: 'pass' | 'fail' | 'warn';
 }
 
-const dummyChecks: CheckResult[] = [
-  { text: "Contact information is present and properly formatted.", status: 'pass' },
-  { text: "Keywords from job description are included (e.g., 'API', 'Microservices').", status: 'pass' },
-  { text: "Resume uses a standard, readable font.", status: 'pass' },
-  { text: "Action verbs are used to describe accomplishments.", status: 'warn' },
-  { text: "Experience section includes quantifiable achievements.", status: 'pass' },
-  { text: "File format is ATS-friendly (no complex tables or images).", status: 'pass' },
-  { text: "Spelling and grammar check passed.", status: 'pass' },
-  { text: "Education section is missing graduation year for one entry.", status: 'fail' },
-  { text: "Skills section could be expanded with more relevant technologies.", status: 'warn' },
-];
+interface AtsResult {
+  score: number;
+  checks: CheckResult[];
+}
 
 interface ATSCheckerProps {
   resumeData: ResumeData;
 }
 
 export function ATSChecker({ resumeData }: ATSCheckerProps) {
-  const [isChecking, setIsChecking] = useState(false);
-  const [score, setScore] = useState<number | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const [result, setResult] = useState<AtsResult | null>(null);
   const [resumeContent, setResumeContent] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const { toast } = useToast();
@@ -57,7 +51,7 @@ export function ATSChecker({ resumeData }: ATSCheckerProps) {
     data.education.forEach(edu => {
       content += `- ${edu.degree} from ${edu.institution} (${edu.graduationDate})\n${edu.details}\n`;
     });
-    content += `\nSkills: ${data.skills.map(s => s.name).join(', ')}\n`;
+    content += `\nSkills: ${data.skills.map(s => `${s.name} (${s.level}/5)`).join(', ')}\n`;
     if (data.activities) {
         content += `\nActivities: ${data.activities}\n`;
     }
@@ -74,12 +68,32 @@ export function ATSChecker({ resumeData }: ATSCheckerProps) {
   };
 
   const handleCheck = () => {
-    setIsChecking(true);
-    setScore(null);
-    setTimeout(() => {
-        setScore(88);
-        setIsChecking(false);
-    }, 2000);
+    if (!resumeContent || !jobDescription) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please provide both resume and job description.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    setResult(null);
+
+    startTransition(async () => {
+      try {
+        const res = await checkAtsFriendliness({
+          resumeContent,
+          jobDescription,
+        });
+        setResult(res);
+      } catch (error) {
+        toast({
+          title: 'ATS Check Failed',
+          description: (error as Error).message,
+          variant: 'destructive',
+        });
+        setResult(null);
+      }
+    });
   };
 
   const getIcon = (status: CheckResult['status']) => {
@@ -92,6 +106,8 @@ export function ATSChecker({ resumeData }: ATSCheckerProps) {
         return <AlertCircle className="h-5 w-5 text-yellow-500" />;
     }
   };
+
+  const score = result?.score;
 
   return (
     <div className="space-y-6">
@@ -130,25 +146,25 @@ export function ATSChecker({ resumeData }: ATSCheckerProps) {
                />
             </div>
           </div>
-          <Button onClick={handleCheck} disabled={isChecking}>
-            {isChecking ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...</>) : 'Check Score'}
+          <Button onClick={handleCheck} disabled={isPending}>
+            {isPending ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...</>) : 'Check Score'}
           </Button>
         </CardContent>
       </Card>
 
-      {(isChecking || score !== null) && (
+      {(isPending || result) && (
         <Card>
           <CardHeader>
             <CardTitle>ATS Report</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {isChecking && (
+            {isPending && (
                 <div className='flex flex-col items-center justify-center gap-4 p-8'>
                     <Loader2 className="h-10 w-10 animate-spin text-primary" />
                     <p>Analyzing documents...</p>
                 </div>
             )}
-            {score !== null && (
+            {score !== null && score !== undefined && (
                  <div className="flex flex-col items-center justify-center gap-4">
                     <div className="relative h-32 w-32">
                         <svg className="h-full w-full" viewBox="0 0 36 36">
@@ -178,9 +194,9 @@ export function ATSChecker({ resumeData }: ATSCheckerProps) {
                     <p className="text-lg font-semibold">Overall Match Score</p>
                 </div>
             )}
-            {score !== null && (
+            {result && result.checks && (
                 <div className='space-y-2 pt-4'>
-                    {dummyChecks.map((check, index) => (
+                    {result.checks.map((check, index) => (
                         <div key={index} className="flex items-start gap-3 p-2 rounded-md bg-muted/50">
                             {getIcon(check.status)}
                             <p className='text-sm'>{check.text}</p>
