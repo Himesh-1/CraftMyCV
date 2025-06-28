@@ -69,7 +69,7 @@ export default function CraftMyCVPage() {
               <TabsTrigger value="optimizer">AI Optimizer</TabsTrigger>
               <TabsTrigger value="ats">ATS Checker</TabsTrigger>
             </TabsList>
-            <TabsContent value="editor" className="flex-1 overflow-hidden">
+            <TabsContent value="editor" className="flex-1 overflow-hidden min-h-0">
               <ScrollArea className="h-full pr-4">
                 <ResumeForm
                   resumeData={resumeData}
@@ -77,12 +77,12 @@ export default function CraftMyCVPage() {
                 />
               </ScrollArea>
             </TabsContent>
-            <TabsContent value="optimizer" className="flex-1 overflow-hidden">
+            <TabsContent value="optimizer" className="flex-1 overflow-hidden min-h-0">
               <ScrollArea className="h-full pr-4">
                 <AIOptimizer resumeData={resumeData} />
               </ScrollArea>
             </TabsContent>
-            <TabsContent value="ats" className="flex-1 overflow-hidden">
+            <TabsContent value="ats" className="flex-1 overflow-hidden min-h-0">
               <ScrollArea className="h-full pr-4">
                 <ATSChecker />
               </ScrollArea>
