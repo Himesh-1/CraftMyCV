@@ -27,7 +27,6 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '../ui/scroll-area';
-import html2pdf from 'html2pdf.js';
 
 interface ResumePreviewProps {
   data: ResumeData;
@@ -55,10 +54,11 @@ export function ResumePreview({
   const { toast } = useToast();
   const resumeRef = useRef<HTMLDivElement>(null);
 
-  const handleDownload = (format: 'PDF' | 'DOCX') => {
+  const handleDownload = async (format: 'PDF' | 'DOCX') => {
     if (format === 'PDF') {
       const element = resumeRef.current;
       if (element) {
+        const { default: html2pdf } = await import('html2pdf.js');
         const opt = {
           margin: 0,
           filename: `${data.personalDetails.fullName.replace(/\s+/g, '-')}-Resume.pdf`,
@@ -1050,3 +1050,4 @@ export function ResumePreview({
     </Card>
   );
 }
+
