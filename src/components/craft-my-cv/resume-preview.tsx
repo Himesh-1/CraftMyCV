@@ -625,6 +625,99 @@ export function ResumePreview({
     </div>
   );
 
+  const renderProjectManagerTemplate = () => (
+    <div className="bg-white text-gray-800 p-8 font-sans w-full aspect-[8.5/11] shadow-lg">
+      {/* Header */}
+      <div className="grid grid-cols-3 gap-8 mb-8 border-b-2 border-gray-200 pb-6">
+        <div className="col-span-2">
+          <h1 className="text-4xl font-bold">{data.personalDetails.fullName}</h1>
+          <p className="text-lg text-gray-600 mt-2">{data.personalDetails.title}</p>
+        </div>
+        <div className="col-span-1 text-right">
+          <ul className="space-y-1 text-sm">
+            <li>{data.personalDetails.address}</li>
+            <li>{data.personalDetails.phoneNumber}</li>
+            <li>{data.personalDetails.email}</li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Objective */}
+      <section className="mb-8">
+        <h2 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Objective</h2>
+        <p className="text-sm">{data.summary}</p>
+      </section>
+
+      {/* Main Content */}
+      <div className="grid grid-cols-3 gap-8">
+        {/* Left Column */}
+        <div className="col-span-2">
+          {/* Experience */}
+          <section className="mb-8">
+            <h2 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Experience</h2>
+            
+            {data.experience.map(exp => (
+              <div className="mb-6" key={exp.id}>
+                <div className="flex justify-between items-start mb-1">
+                  <h3 className="text-lg font-semibold">{exp.jobTitle}</h3>
+                  <span className="text-gray-600 text-sm">{formatDate(exp.startDate)} – {exp.endDate === 'Present' ? 'Present' : formatDate(exp.endDate)}</span>
+                </div>
+                <h4 className="font-medium">{exp.company}</h4>
+                <ul className="list-disc pl-5 mt-2 space-y-1 text-sm">
+                   {exp.description.split('\n').filter(line => line.trim()).map((line, i) => (
+                      <li key={i}>{line.replace(/^-/, '').trim()}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </section>
+        </div>
+
+        {/* Right Column */}
+        <div className="col-span-1">
+          {/* Skills */}
+          <section className="mb-8">
+            <h2 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Skills & Abilities</h2>
+            <ul className="space-y-2 text-sm">
+              {data.skills.map(skill => (
+                <li key={skill.id} className="flex items-start">
+                  <span className="mr-2">•</span>
+                  <span>{skill.name}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          {/* Education */}
+          <section className="mb-8">
+            <h2 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Education</h2>
+            {data.education.map(edu => (
+              <div key={edu.id} className="mb-4">
+                <h3 className="font-semibold">{edu.institution}</h3>
+                <p className="text-sm">{formatDate(edu.graduationDate)}</p>
+                <p className="mt-1">{edu.degree}</p>
+                <div className="mt-2 text-sm space-y-1">
+                  {edu.details.split('\n').filter(line => line.trim()).map((line, i) => (
+                    <p key={i} className={line.toLowerCase().includes('coursework') ? 'font-medium' : 'list-item ml-5'}>
+                      {line.replace(/^-/, '').trim()}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </section>
+
+          {/* Leadership */}
+          {data.leadership && (
+            <section>
+              <h2 className="text-xl font-bold border-b border-gray-300 pb-1 mb-3">Leadership</h2>
+              <p className="text-sm">{data.leadership}</p>
+            </section>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <Card className="h-full flex flex-col">
@@ -681,6 +774,13 @@ export function ResumePreview({
             >
               Medical
             </Button>
+             <Button
+              variant={template === 'project-manager' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onTemplateChange('project-manager')}
+            >
+              Project Manager
+            </Button>
           </div>
         </div>
       </CardHeader>
@@ -688,6 +788,8 @@ export function ResumePreview({
         <CardContent className="p-2 md:p-4 lg:p-6 bg-muted/50 flex justify-center">
           {(() => {
             switch (template) {
+              case 'project-manager':
+                return renderProjectManagerTemplate();
               case 'medical':
                 return renderMedicalTemplate();
               case 'ui-ux':

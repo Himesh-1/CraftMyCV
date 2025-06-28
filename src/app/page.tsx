@@ -43,7 +43,7 @@ const initialResumeData: ResumeData = {
       institution: 'State University',
       location: 'Townsville, USA',
       graduationDate: '2019-05-01',
-      details: 'GPA: 3.8/4.0, Magna Cum Laude',
+      details: 'GPA: 3.8/4.0, Magna Cum Laude\nRelevant Coursework:\n- Data Structures & Algorithms\n- Web Development\n- Database Systems',
     },
   ],
   skills: [
@@ -53,6 +53,7 @@ const initialResumeData: ResumeData = {
     { id: 'skill4', name: 'System Design', level: 4 },
   ],
   activities: 'Literature • Environmental conservation • Art • Yoga • Skiing • Travel',
+  leadership: 'Served as Vice President of the Project Management Club at university'
 };
 
 export default function CraftMyCVPage() {
@@ -70,7 +71,7 @@ export default function CraftMyCVPage() {
               <TabsTrigger value="optimizer">AI Optimizer</TabsTrigger>
               <TabsTrigger value="ats">ATS Checker</TabsTrigger>
             </TabsList>
-            <TabsContent value="editor" className="flex-1 overflow-hidden min-h-0">
+            <TabsContent value="editor" className="flex-1 overflow-hidden p-1 min-h-0">
               <ScrollArea className="h-full pr-4">
                 <ResumeForm
                   resumeData={resumeData}
@@ -78,12 +79,12 @@ export default function CraftMyCVPage() {
                 />
               </ScrollArea>
             </TabsContent>
-            <TabsContent value="optimizer" className="flex-1 overflow-hidden min-h-0">
+            <TabsContent value="optimizer" className="flex-1 overflow-hidden p-1 min-h-0">
                <ScrollArea className="h-full pr-4">
                 <AIOptimizer resumeData={resumeData} />
               </ScrollArea>
             </TabsContent>
-            <TabsContent value="ats" className="flex-1 mt-2 overflow-hidden min-h-0">
+            <TabsContent value="ats" className="flex-1 p-1 mt-0 overflow-hidden min-h-0">
               <ScrollArea className="h-full pr-4">
                 <ATSChecker />
               </ScrollArea>

@@ -23,6 +23,7 @@ import {
   Sparkles,
   UserCircle,
   Star,
+  Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -282,8 +283,8 @@ export function ResumeForm({ resumeData, setResumeData }: ResumeFormProps) {
                     </div>
                 </div>
                  <div className="space-y-2">
-                    <Label>Details (e.g., GPA, Honors)</Label>
-                    <Input value={edu.details} onChange={e => handleFieldChange('education', index, 'details', e.target.value)} />
+                    <Label>Details (e.g., GPA, Honors, Coursework)</Label>
+                    <Textarea value={edu.details} onChange={e => handleFieldChange('education', index, 'details', e.target.value)} rows={4} />
                 </div>
               </div>
             ))}
@@ -354,6 +355,26 @@ export function ResumeForm({ resumeData, setResumeData }: ResumeFormProps) {
               value={resumeData.activities}
               onChange={(e) =>
                 setResumeData((prev) => ({ ...prev, activities: e.target.value }))
+              }
+              rows={3}
+            />
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Leadership */}
+        <AccordionItem value="leadership">
+          <AccordionTrigger>
+            <div className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              <span className="font-semibold">Leadership</span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-2 p-1">
+             <Label>Describe your leadership experience or roles.</Label>
+            <Textarea
+              value={resumeData.leadership || ''}
+              onChange={(e) =>
+                setResumeData((prev) => ({ ...prev, leadership: e.target.value }))
               }
               rows={3}
             />

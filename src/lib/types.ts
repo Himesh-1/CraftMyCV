@@ -19,7 +19,7 @@ export interface WorkExperience {
 }
 
 export interface Education {
-  id: string;
+  id:string;
   degree: string;
   institution: string;
   location: string;
@@ -41,6 +41,7 @@ export interface ResumeData {
   education: Education[];
   skills: Skill[];
   activities: string;
+  leadership?: string;
 }
 
 export type ResumeTemplate =
@@ -50,4 +51,5 @@ export type ResumeTemplate =
   | 'modern'
   | 'ats-classic'
   | 'ui-ux'
-  | 'medical';
+  | 'medical'
+  | 'project-manager';
