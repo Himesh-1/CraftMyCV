@@ -19,6 +19,7 @@ import {
   FileText,
   Plus,
   Trash2,
+  Sparkles,
 } from 'lucide-react';
 
 interface ResumeFormProps {
@@ -98,6 +99,15 @@ export function ResumeForm({ resumeData, setResumeData }: ResumeFormProps) {
                   id="fullName"
                   name="fullName"
                   value={resumeData.personalDetails.fullName}
+                  onChange={handlePersonalDetailsChange}
+                />
+              </div>
+               <div className="space-y-2">
+                <Label htmlFor="title">Professional Title</Label>
+                <Input
+                  id="title"
+                  name="title"
+                  value={resumeData.personalDetails.title}
                   onChange={handlePersonalDetailsChange}
                 />
               </div>
@@ -277,6 +287,26 @@ export function ResumeForm({ resumeData, setResumeData }: ResumeFormProps) {
             <Button variant="outline" onClick={() => addField('skills')}>
               <Plus className="mr-2 h-4 w-4" /> Add Skill
             </Button>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Activities */}
+        <AccordionItem value="activities">
+          <AccordionTrigger>
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5" />
+              <span className="font-semibold">Activities</span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-2 p-1">
+             <Label>List your activities or interests, separated by commas or bullets.</Label>
+            <Textarea
+              value={resumeData.activities}
+              onChange={(e) =>
+                setResumeData((prev) => ({ ...prev, activities: e.target.value }))
+              }
+              rows={3}
+            />
           </AccordionContent>
         </AccordionItem>
 

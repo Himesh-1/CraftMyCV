@@ -45,6 +45,16 @@ export function ResumePreview({
     }
   };
 
+  const formatAtsDate = (dateString: string) => {
+    if (!dateString) return '';
+    try {
+        const date = new Date(dateString);
+        return `${date.toLocaleString('en-US', { month: 'long' }).toUpperCase()} ${date.getFullYear()}`;
+    } catch {
+        return dateString.toUpperCase();
+    }
+  };
+
   const templateStyles = {
     mit: {
       container: 'font-sans text-sm',
@@ -102,7 +112,7 @@ export function ResumePreview({
     },
   };
 
-  const styles = templateStyles[template];
+  const styles = templateStyles[template] || {};
 
   const renderMainContent = () => (
     <main className="mt-4 space-y-4">
@@ -344,6 +354,69 @@ export function ResumePreview({
     </div>
   );
 
+  const renderAtsClassicTemplate = () => (
+    <div className="bg-white text-black p-8 font-sans w-full aspect-[8.5/11] shadow-lg">
+      <header className="mb-8 text-center">
+        <h1 className="text-3xl font-bold mb-2">{data.personalDetails.title}</h1>
+        <p className="text-base">
+          {data.summary}
+        </p>
+      </header>
+
+      <section className="mb-6">
+        <h2 className="text-xl font-bold border-b-2 border-black pb-2 mb-4">Experience</h2>
+        {data.experience.map(exp => (
+            <div className="mb-4" key={exp.id}>
+              <div className="flex justify-between items-start mb-1 text-sm">
+                <span className="font-bold">{formatAtsDate(exp.startDate)} – {exp.endDate === 'Present' ? 'PRESENT' : formatAtsDate(exp.endDate)}</span>
+                <span className="font-medium">{exp.location}</span>
+              </div>
+              <h3 className="text-lg font-bold">{exp.jobTitle} | {exp.company}</h3>
+              <ul className="list-disc pl-5 mt-1 space-y-1 text-sm">
+                {exp.description.split('\n').filter(line => line.trim()).map((line, i) => (
+                    <li key={i}>{line.replace(/^-/, '').trim()}</li>
+                ))}
+              </ul>
+            </div>
+        ))}
+      </section>
+
+      {data.skills.length > 0 && (
+          <section className="mb-6">
+            <h2 className="text-xl font-bold border-b-2 border-black pb-2 mb-4">Skills</h2>
+            <div className="flex flex-wrap gap-2">
+              {data.skills.map((skill) => (
+                <span key={skill.id} className="bg-gray-100 text-black px-3 py-1 rounded text-sm">
+                  {skill.name}
+                </span>
+              ))}
+            </div>
+          </section>
+      )}
+
+      <section className="mb-6">
+        <h2 className="text-xl font-bold border-b-2 border-black pb-2 mb-4">Education</h2>
+        {data.education.map(edu => (
+            <div key={edu.id}>
+              <div className="flex justify-between items-start mb-1 text-sm">
+                <span className="font-bold">{formatAtsDate(edu.graduationDate)}</span>
+                <span className="font-medium">{edu.location}</span>
+              </div>
+              <h3 className="text-lg font-bold">{edu.degree} | {edu.institution}</h3>
+              {edu.details && <p className="mt-1 text-sm">{edu.details}</p>}
+            </div>
+        ))}
+      </section>
+
+      {data.activities && (
+          <section>
+            <h2 className="text-xl font-bold border-b-2 border-black pb-2 mb-4">Activities</h2>
+            <p className="italic text-sm">{data.activities}</p>
+          </section>
+      )}
+    </div>
+  );
+
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="flex-row items-center justify-between">
@@ -378,12 +451,21 @@ export function ResumePreview({
             >
               Modern
             </Button>
+             <Button
+              variant={template === 'ats-classic' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => onTemplateChange('ats-classic')}
+            >
+              ATS Classic
+            </Button>
           </div>
         </div>
       </CardHeader>
       <ScrollArea className="flex-1">
         <CardContent className="p-2 md:p-4 lg:p-6 bg-muted/50 flex justify-center">
-          {template === 'modern'
+          {template === 'ats-classic'
+            ? renderAtsClassicTemplate()
+            : template === 'modern'
             ? renderModernTemplate()
             : renderStandardTemplate()}
         </CardContent>

@@ -13,6 +13,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 const initialResumeData: ResumeData = {
   personalDetails: {
     fullName: 'John Doe',
+    title: 'Senior Software Engineer',
     email: 'john.doe@example.com',
     phoneNumber: '123-456-7890',
     address: 'Anytown, USA',
@@ -48,6 +49,7 @@ const initialResumeData: ResumeData = {
     { id: 'skill3', name: 'Node.js' },
     { id: 'skill4', name: 'System Design' },
   ],
+  activities: 'Literature • Environmental conservation • Art • Yoga • Skiing • Travel',
 };
 
 export default function CraftMyCVPage() {
@@ -77,8 +79,8 @@ export default function CraftMyCVPage() {
                 />
               </ScrollArea>
             </TabsContent>
-            <TabsContent value="optimizer" className="flex-1 mt-2 overflow-hidden min-h-0">
-              <ScrollArea className="h-full pr-4">
+            <TabsContent value="optimizer" className="flex-1 overflow-hidden min-h-0">
+               <ScrollArea className="h-full pr-4 -mr-4">
                 <AIOptimizer resumeData={resumeData} />
               </ScrollArea>
             </TabsContent>

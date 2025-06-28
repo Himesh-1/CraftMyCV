@@ -1,5 +1,6 @@
 export interface PersonalDetails {
   fullName: string;
+  title: string;
   email: string;
   phoneNumber: string;
   address: string;
@@ -36,6 +37,7 @@ export interface ResumeData {
   experience: WorkExperience[];
   education: Education[];
   skills: Skill[];
+  activities: string;
 }
 
-export type ResumeTemplate = 'mit' | 'harvard' | 'classic' | 'modern';
+export type ResumeTemplate = 'mit' | 'harvard' | 'classic' | 'modern' | 'ats-classic';
