@@ -1,11 +1,14 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { FileCheck, Loader2, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
-import { Progress } from '@/components/ui/progress';
+import { useToast } from '@/hooks/use-toast';
+import type { ResumeData } from '@/lib/types';
+
 
 interface CheckResult {
   text: string;
@@ -24,9 +27,51 @@ const dummyChecks: CheckResult[] = [
   { text: "Skills section could be expanded with more relevant technologies.", status: 'warn' },
 ];
 
-export function ATSChecker() {
+interface ATSCheckerProps {
+  resumeData: ResumeData;
+}
+
+export function ATSChecker({ resumeData }: ATSCheckerProps) {
   const [isChecking, setIsChecking] = useState(false);
   const [score, setScore] = useState<number | null>(null);
+  const [resumeContent, setResumeContent] = useState('');
+  const [jobDescription, setJobDescription] = useState('');
+  const { toast } = useToast();
+
+  const stringifyResume = (data: ResumeData): string => {
+    let content = `Full Name: ${data.personalDetails.fullName}\n`;
+    content += `Title: ${data.personalDetails.title}\n`;
+    content += `Email: ${data.personalDetails.email}\n`;
+    content += `Phone: ${data.personalDetails.phoneNumber}\n`;
+    content += `Address: ${data.personalDetails.address}\n`;
+    content += `Website: ${data.personalDetails.website}\n\n`;
+    content += `Summary/Objective:\n${data.summary}\n\n`;
+    if (data.aboutMe) {
+      content += `About Me:\n${data.aboutMe}\n\n`;
+    }
+    content += `Experience:\n`;
+    data.experience.forEach(exp => {
+      content += `- ${exp.jobTitle} at ${exp.company} (${exp.startDate} - ${exp.endDate})\n${exp.description}\n`;
+    });
+    content += `\nEducation:\n`;
+    data.education.forEach(edu => {
+      content += `- ${edu.degree} from ${edu.institution} (${edu.graduationDate})\n${edu.details}\n`;
+    });
+    content += `\nSkills: ${data.skills.map(s => s.name).join(', ')}\n`;
+    if (data.activities) {
+        content += `\nActivities: ${data.activities}\n`;
+    }
+    if (data.leadership) {
+        content += `\nLeadership: ${data.leadership}\n`;
+    }
+    return content;
+  };
+
+  const handleImport = () => {
+    const content = stringifyResume(resumeData);
+    setResumeContent(content);
+    toast({ title: "Success", description: "Resume content imported from editor." });
+  };
 
   const handleCheck = () => {
     setIsChecking(true);
@@ -61,8 +106,29 @@ export function ATSChecker() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
-            <Textarea placeholder="Paste your resume content here..." rows={8} />
-            <Textarea placeholder="Paste the job description here..." rows={8} />
+            <div className="space-y-2">
+               <div className="flex justify-between items-center">
+                <Label htmlFor="resumeContentAts">Resume Content</Label>
+                <Button variant="link" size="sm" onClick={handleImport}>Import from editor</Button>
+              </div>
+              <Textarea
+                id="resumeContentAts"
+                placeholder="Paste your resume content here or import from the editor."
+                rows={8}
+                value={resumeContent}
+                onChange={e => setResumeContent(e.target.value)}
+              />
+            </div>
+             <div className="space-y-2">
+              <Label htmlFor="jobDescriptionAts">Job Description</Label>
+              <Textarea
+                id="jobDescriptionAts"
+                placeholder="Paste the job description here..."
+                rows={8}
+                value={jobDescription}
+                onChange={e => setJobDescription(e.target.value)}
+               />
+            </div>
           </div>
           <Button onClick={handleCheck} disabled={isChecking}>
             {isChecking ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...</>) : 'Check Score'}

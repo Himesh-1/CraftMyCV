@@ -86,7 +86,7 @@ export default function CraftMyCVPage() {
             </TabsContent>
             <TabsContent value="ats" className="flex-1 p-1 mt-0 overflow-hidden min-h-0">
               <ScrollArea className="h-full pr-4">
-                <ATSChecker />
+                <ATSChecker resumeData={resumeData} />
               </ScrollArea>
             </TabsContent>
           </Tabs>

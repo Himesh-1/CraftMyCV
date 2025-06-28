@@ -9,7 +9,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Sparkles, Loader2, ClipboardCopy, FileWarning, Lightbulb } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { optimizeResumeContent } from '@/app/actions';
-import type { ResumeData, OptimizeResumeContentOutput } from '@/lib/types';
+import type { ResumeData } from '@/lib/types';
+import type { OptimizeResumeContentOutput } from '@/ai/flows/optimize-resume';
+
 
 interface AIOptimizerProps {
   resumeData: ResumeData;
@@ -45,6 +47,9 @@ export function AIOptimizer({ resumeData }: AIOptimizerProps) {
     content += `\nSkills: ${data.skills.map(s => s.name).join(', ')}\n`;
     if (data.activities) {
         content += `\nActivities: ${data.activities}\n`;
+    }
+    if (data.leadership) {
+      content += `\nLeadership: ${data.leadership}\n`;
     }
     return content;
   };
