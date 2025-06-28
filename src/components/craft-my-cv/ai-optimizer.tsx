@@ -150,7 +150,7 @@ export function AIOptimizer({ resumeData }: AIOptimizerProps) {
               <Button variant="ghost" size="icon" onClick={() => copyToClipboard(result.missingInformation)}><ClipboardCopy className="h-4 w-4" /></Button>
             </CardHeader>
             <CardContent>
-              <p className="text-sm">{result.missingInformation}</p>
+              <pre className="whitespace-pre-wrap font-sans text-sm">{result.missingInformation}</pre>
             </CardContent>
           </Card>
 
@@ -163,7 +163,7 @@ export function AIOptimizer({ resumeData }: AIOptimizerProps) {
                <Button variant="ghost" size="icon" onClick={() => copyToClipboard(result.suggestions)}><ClipboardCopy className="h-4 w-4" /></Button>
             </CardHeader>
             <CardContent>
-              <p className="text-sm">{result.suggestions}</p>
+              <pre className="whitespace-pre-wrap font-sans text-sm">{result.suggestions}</pre>
             </CardContent>
           </Card>
         </div>

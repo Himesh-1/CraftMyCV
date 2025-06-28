@@ -19,7 +19,11 @@ const OptimizeResumeContentInputSchema = z.object({
 export type OptimizeResumeContentInput = z.infer<typeof OptimizeResumeContentInputSchema>;
 
 const OptimizeResumeContentOutputSchema = z.object({
-  optimizedContent: z.string().describe('The optimized content of the resume.'),
+  optimizedContent: z
+    .string()
+    .describe(
+      'The full, optimized resume content, formatted as a single block of plain text. Maintain the original structure of the resume (sections like Summary, Experience, etc.). Do not wrap this in JSON or any other format.'
+    ),
   missingInformation: z
     .string()
     .describe('Information that is potentially missing from the resume.'),
@@ -47,13 +51,13 @@ Industry: {{{industry}}}
 Resume Content:
 {{{resumeContent}}}
 
-Optimize the resume content to increase the chances of getting shortlisted. Focus on making the content more impactful and tailored to the specified job role and industry.
+Your response must be a JSON object with three keys: "optimizedContent", "missingInformation", and "suggestions".
 
-Missing Information:
-Identify any information that is potentially missing from the resume, such as specific skills, experiences, or qualifications that are highly valued in the specified job role and industry.
+For the "optimizedContent" key, provide the complete, optimized resume as a single formatted string. Ensure it is plain text, not another JSON object. Re-write the original resume content to make it more impactful and tailored to the specified job role and industry.
 
-Suggestions:
-Offer concrete suggestions for improving the impact of the resume, such as using stronger action verbs, quantifying accomplishments, and highlighting relevant skills and experiences.
+For the "missingInformation" key, identify any information that is potentially missing from the resume, such as specific skills, experiences, or qualifications that are highly valued in the specified job role and industry.
+
+For the "suggestions" key, offer concrete suggestions for improving the impact of the resume, such as using stronger action verbs, quantifying accomplishments, and highlighting relevant skills and experiences.
 `,
 });
 

@@ -4,31 +4,36 @@
 
 @layer base {
   :root {
-    --background: 50 93% 94%;
-    --foreground: 75 10% 20%;
-    --card: 50 93% 96%;
-    --card-foreground: 75 10% 20%;
-    --popover: 50 93% 96%;
-    --popover-foreground: 75 10% 20%;
-    --primary: 75 23% 32%;
-    --primary-foreground: 50 93% 98%;
-    --secondary: 75 15% 85%;
-    --secondary-foreground: 75 23% 32%;
-    --muted: 75 15% 88%;
-    --muted-foreground: 75 10% 40%;
-    --accent: 28 66% 44%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 75 15% 80%;
-    --input: 75 15% 90%;
-    --ring: 75 23% 32%;
-    --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --background: 207 39% 16%;          /* #172B3A */
+--foreground: 47 29% 93%;            /* #F3F1E7 */
+
+--card: 207 39% 23%;                 /* #233C50 */
+--card-foreground: 47 29% 93%;
+
+--popover: 207 39% 23%;
+--popover-foreground: 47 29% 93%;
+
+--primary: 37 65% 59%;               /* gold for primary buttons */
+--primary-foreground: 207 39% 16%;
+
+--secondary: 206 43% 48%;            /* sky accent for secondary buttons */
+--secondary-foreground: 47 29% 93%;
+
+--muted: 207 31% 27%;                /* #30495B muted backgrounds */
+--muted-foreground: 47 29% 85%;
+
+--accent: 37 65% 59%;
+--accent-foreground: 207 39% 16%;
+
+--destructive: 0 35% 53%;            /* #B25C5C */
+--destructive-foreground: 47 29% 93%;
+
+--border: 207 31% 27%;               /* same as muted */
+--input: 207 31% 27%;
+--ring: 37 65% 59%;                  /* gold ring focus */
+
+    
+
   }
   .dark {
     --background: 75 10% 10%;
