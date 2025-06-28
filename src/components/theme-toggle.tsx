@@ -1,9 +1,11 @@
+
 'use client';
 
 import * as React from 'react';
 import { useTheme } from 'next-themes';
 import { Moon, Sun } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function ThemeToggle() {
   const [mounted, setMounted] = React.useState(false);
@@ -15,8 +17,14 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    // A placeholder can be returned to prevent layout shift, or null
-    return null;
+    // Render a placeholder on the server to prevent hydration mismatch
+    return (
+      <div className="flex items-center space-x-2">
+        <Skeleton className="h-5 w-5" />
+        <Skeleton className="h-6 w-11 rounded-full" />
+        <Skeleton className="h-5 w-5" />
+      </div>
+    );
   }
 
   const isDarkMode = resolvedTheme === 'dark';
